@@ -1,0 +1,58 @@
+@layer components {
+  @scope (.media-skin) {
+    :scope {
+      --media-caption-track-duration: var(--media-duration-controls);
+      --media-caption-track-delay: 25ms;
+      --media-caption-track-y: calc(var(--media-spacing) * -3);
+    }
+
+    video::cue {
+      color: var(--atlas-subtitle-color, #fffdf4);
+      background-color: var(--atlas-subtitle-background, rgb(8 10 8 / 48%));
+      font-family: var(--atlas-subtitle-font, Arial, sans-serif);
+      font-size: var(--atlas-subtitle-size, 100%);
+      text-shadow: var(--atlas-subtitle-shadow, 0 1px 3px #000);
+      text-align: var(--atlas-subtitle-align, center);
+    }
+
+    @media (forced-colors: active) {
+      video::cue {
+        color: CanvasText;
+        background-color: Canvas;
+        text-shadow: none;
+      }
+    }
+
+    video::-webkit-media-text-track-container {
+      z-index: 20;
+      font-family: inherit;
+      scale: 0.98;
+      translate: 0 var(--media-caption-track-y);
+      transition: translate var(--media-caption-track-duration) ease-out;
+      transition-delay: var(--media-caption-track-delay);
+    }
+
+    :scope[data-controls-visible] {
+      --media-caption-track-y: var(--media-caption-controls-y);
+    }
+
+    /* Compat combines the offset and scale into one transform for browsers without individual transform properties. */
+    :scope[data-theme="compat"] video::-webkit-media-text-track-container {
+      scale: none;
+      translate: none;
+      transform: translateY(var(--media-caption-track-y, 0px)) scale(0.98);
+      transition-property: transform;
+    }
+
+    /* Matches the `--container-media-2xl` control layout breakpoint. */
+    @container media-root (width < 42rem) {
+      :scope[data-theme="default"][data-controls-visible] video {
+        --media-caption-track-y: calc(var(--media-spacing) * -14);
+      }
+
+      :scope[data-theme="neutral"][data-controls-visible] video {
+        --media-caption-track-y: calc(var(--media-spacing) * -17);
+      }
+    }
+  }
+}
